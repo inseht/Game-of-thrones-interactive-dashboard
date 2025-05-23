@@ -1,4 +1,4 @@
-order,season,episode,character_killed,killer,method,method_cat,reason,location,allegiance,importance
+order,Season,Episode,character_killed,killer,method,method_cat,reason,location,allegiance,importance
 1,1,1,Waymar Royce,White Walker,Ice sword,Blade,Unknown,Beyond the Wall,"House Royce, Night’s Watch",2
 2,1,1,Gared,White Walker,Ice sword,Blade,Unknown,Beyond the Wall,Night’s Watch,2
 3,1,1,Will,Ned Stark,Sword (Ice),Blade,Deserting the Night’s Watch,Winterfell,Night’s Watch,2
