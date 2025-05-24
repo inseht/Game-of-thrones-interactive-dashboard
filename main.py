@@ -2,48 +2,74 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Leer los CSV
-data = pd.read_csv('csv/data.csv')
-estrellas = pd.read_csv('csv/starsTransformers.csv')
-
+st.set_page_config(layout="wide")
 st.title("Game of Thrones - Interactive Dashboard")
 
-# Mostrar tabla con datos de data.csv
-st.subheader("Datos de data.csv")
-st.dataframe(data)
+episodes = pd.read_csv('csv/GOTepisodes.csv')
+deaths = pd.read_csv('csv/GOTdeaths.csv')
+stars = pd.read_csv('csv/starsTransformers.csv')
 
-# Si 'estrellas' existe en starsTransformers.csv hacemos los gráficos
-if 'estrellas' in estrellas.columns:
-    min_estrellas = int(estrellas['estrellas'].min())
-    max_estrellas = int(estrellas['estrellas'].max())
+episodes['Season'] = pd.to_numeric(episodes['Season'], errors='coerce')
+deaths['Season'] = pd.to_numeric(deaths['Season'], errors='coerce')
 
-    estrellas_range = st.slider(
-        "Selecciona el rango de estrellas",
-        min_value=min_estrellas,
-        max_value=max_estrellas,
-        value=(min_estrellas, max_estrellas),
-        step=1
-    )
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
+    "General", "Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6", "Season 7", "Season 8"
+])
 
-    df_filtrado = estrellas[(estrellas['estrellas'] >= estrellas_range[0]) & (estrellas['estrellas'] <= estrellas_range[1])]
+with tab1:
+    st.subheader("Datos de Muertes (Todos)")
+    st.dataframe(deaths, use_container_width=True)
 
-    tipo_grafico = st.selectbox("Tipo de gráfico", ["Gráfico de pastel", "Gráfico de barras"])
+with tab2:
+    col1, col2 = st.columns(2)
 
-    fig, ax = plt.subplots()
+    with col1:
+        min_stars = int(stars['stars'].min())
+        max_stars = int(stars['stars'].max())
 
-    conteo = df_filtrado['estrellas'].value_counts().sort_index()
+        stars_range = st.slider(
+            "Selecciona el rango de stars",
+            min_value=min_stars,
+            max_value=max_stars,
+            value=(min_stars, max_stars),
+            step=1
+        )
 
-    if tipo_grafico == "Gráfico de pastel":
-        ax.pie(conteo.values, labels=conteo.index, autopct='%1.1f%%', colors=plt.cm.Oranges_r(range(len(conteo))))
-        ax.set_title('Distribución de Estrellas (Pastel)')
-    else:
-        ax.bar(conteo.index, conteo.values, color='#8B4513', edgecolor='white')
-        ax.set_title('Distribución de Estrellas (Barras)')
-        ax.set_xlabel('Estrellas')
-        ax.set_ylabel('Frecuencia')
+        df_filtrado = stars[
+            (stars['stars'] >= stars_range[0]) & 
+            (stars['stars'] <= stars_range[1])
+        ]
 
-    fig.patch.set_alpha(0)
-    ax.patch.set_alpha(0)
-    st.pyplot(fig)
-else:
-    st.warning("La columna 'estrellas' no existe en el CSV de estrellas.")
+        tipo_grafico = st.selectbox("Tipo de gráfico", ["Gráfico de pastel", "Gráfico de barras"])
+
+    with col2:
+        fig, ax = plt.subplots()
+        conteo = df_filtrado['stars'].value_counts().sort_index()
+
+        if tipo_grafico == "Gráfico de pastel":
+            ax.pie(conteo.values, labels=conteo.index, autopct='%1.1f%%', colors=plt.cm.Oranges_r(range(len(conteo))))
+            ax.set_title('Distribución de stars (Pastel)')
+        else:
+            ax.bar(conteo.index, conteo.values, color='#8B4513', edgecolor='white')
+            ax.set_title('Distribución de stars (Barras)')
+            ax.set_xlabel('stars')
+            ax.set_ylabel('Frecuencia')
+
+        fig.patch.set_alpha(0)
+        ax.patch.set_alpha(0)
+        st.pyplot(fig)
+
+tabs = [tab3, tab4, tab5, tab6, tab7, tab8, tab9]
+
+for i, tab in enumerate(tabs):
+    season = i + 2  
+    with tab:
+        st.subheader(f"Temporada {season}")
+        
+        muertes_temp = deaths[deaths['Season'] == season]
+        st.markdown("### Muertes")
+        st.dataframe(muertes_temp, use_container_width=True)
+
+        episodios_temp = episodes[episodes['Season'] == season]
+        st.markdown("### Episodios")
+        st.dataframe(episodios_temp, use_container_width=True)
