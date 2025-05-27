@@ -1,9 +1,37 @@
+import base64
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-st.set_page_config(layout="wide")
-st.title("Game of Thrones - Interactive Dashboard")
+st.set_page_config(
+    page_title="Game of thrones: interactive dashboard",
+    page_icon="resources/icon.png",
+    layout="wide", 
+)
+
+st.image("resources/title.png", use_container_width =True)
+
+def add_bg_from_local(image_file):
+    with open(image_file, "rb") as f:
+        img_bytes = f.read()
+        encoded_string = base64.b64encode(img_bytes).decode()
+
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{encoded_string}"); /* Cambia 'jpeg' por 'png' si tu imagen es .png */
+            background-size: 100% 100%; /* Asegura que la imagen cubra todo el fondo */
+            background-position: center; /* Centra la imagen */
+            background-repeat: no-repeat; /* Evita que la imagen se repita */
+            background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+add_bg_from_local("resources/background.png")
 
 episodes = pd.read_csv('csv/GOTepisodes.csv')
 deaths = pd.read_csv('csv/GOTdeaths.csv')
