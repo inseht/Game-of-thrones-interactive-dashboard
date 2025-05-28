@@ -1,6 +1,6 @@
-Metadata-Version: 2.3
+Metadata-Version: 2.4
 Name: jsonschema
-Version: 4.23.0
+Version: 4.24.0
 Summary: An implementation of JSON Schema validation for Python
 Project-URL: Homepage, https://github.com/python-jsonschema/jsonschema
 Project-URL: Documentation, https://python-jsonschema.readthedocs.io/
@@ -10,15 +10,13 @@ Project-URL: Tidelift, https://tidelift.com/subscription/pkg/pypi-jsonschema?utm
 Project-URL: Changelog, https://github.com/python-jsonschema/jsonschema/blob/main/CHANGELOG.rst
 Project-URL: Source, https://github.com/python-jsonschema/jsonschema
 Author-email: Julian Berman <Julian+jsonschema@GrayVines.com>
-License: MIT
+License-Expression: MIT
 License-File: COPYING
 Keywords: data validation,json,json schema,jsonschema,validation
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Classifier: Programming Language :: Python
-Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
@@ -28,7 +26,7 @@ Classifier: Programming Language :: Python :: Implementation :: CPython
 Classifier: Programming Language :: Python :: Implementation :: PyPy
 Classifier: Topic :: File Formats :: JSON
 Classifier: Topic :: File Formats :: JSON :: JSON Schema
-Requires-Python: >=3.8
+Requires-Python: >=3.9
 Requires-Dist: attrs>=22.2.0
 Requires-Dist: importlib-resources>=1.4.0; python_version < '3.9'
 Requires-Dist: jsonschema-specifications>=2023.03.6
@@ -159,8 +157,6 @@ I'm Julian Berman.
 
 Get in touch, via GitHub or otherwise, if you've got something to contribute, it'd be most welcome!
 
-You can also generally find me on Libera (nick: ``Julian``) in various channels, including ``#python``.
-
 If you feel overwhelmingly grateful, you can also `sponsor me <https://github.com/sponsors/Julian/>`_.
 
 And for companies who appreciate ``jsonschema`` and its continued support and growth, ``jsonschema`` is also now supportable via `TideLift <https://tidelift.com/subscription/pkg/pypi-jsonschema?utm_source=pypi-jsonschema&utm_medium=referral&utm_campaign=readme>`_.
@@ -169,8 +165,8 @@ And for companies who appreciate ``jsonschema`` and its continued support and gr
 Release Information
 -------------------
 
-v4.23.0
+v4.24.0
 =======
 
-* Do not reorder dictionaries (schemas, instances) that are printed as part of validation errors.
-* Declare support for Py3.13
+* Fix improper handling of ``unevaluatedProperties`` in the presence of ``additionalProperties`` (#1351).
+* Support for Python 3.8 has been dropped, as it is end-of-life.

@@ -1,4 +1,4 @@
-order,Season,Episode,character_killed,killer,method,method_cat,reason,location,importance,allegianceDeath,allegianceKiller
+Order,Season,Episode,Character Killed,Killer,Method,Method Category,Reason,Location,Importance,Allegiance death,Allegiance killer
 1,1,1,Waymar Royce,White Walker,Ice sword,Blade,Unknown,Beyond the Wall,2.0,House Royce,Night’s Watch
 2,1,1,Gared,White Walker,Ice sword,Blade,Unknown,Beyond the Wall,2.0,Night’s Watch,
 3,1,1,Will,Ned Stark,Sword (Ice),Blade,Deserting the Night’s Watch,Winterfell,2.0,Night’s Watch,

@@ -1,1 +1,2 @@
-# Game-of-thrones-interactive-dashboard proyecto final de inteligencia de negocios y redes sociales
+# Game-of-thrones-interactive-dashboard 
+Proyecto final de Inteligencia de Negocios y Redes Sociales

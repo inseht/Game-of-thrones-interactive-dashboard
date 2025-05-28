@@ -3,39 +3,67 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
+episodes = pd.read_csv('csv/GOTepisodes.csv')
+deaths = pd.read_csv('csv/GOTdeaths.csv')
+stars = pd.read_csv('csv/starsTransformers.csv')
+
 st.set_page_config(
-    page_title="Game of thrones: interactive dashboard",
+    page_title="Game of thrones: Interactive dashboard",
     page_icon="resources/icon.png",
     layout="wide", 
 )
 
-st.image("resources/title.png", use_container_width =True)
-
-def add_bg_from_local(image_file):
+def get_encoded_bg(image_file):
     with open(image_file, "rb") as f:
         img_bytes = f.read()
         encoded_string = base64.b64encode(img_bytes).decode()
+    return encoded_string
 
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{encoded_string}"); /* Cambia 'jpeg' por 'png' si tu imagen es .png */
-            background-size: 100% 100%; /* Asegura que la imagen cubra todo el fondo */
-            background-position: center; /* Centra la imagen */
-            background-repeat: no-repeat; /* Evita que la imagen se repita */
-            background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+# Obtener fondo codificado
+encoded_string = get_encoded_bg("resources/background.png")
 
-add_bg_from_local("resources/background.png")
+# Agregar estilos
+st.markdown(f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{encoded_string}");
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
 
-episodes = pd.read_csv('csv/GOTepisodes.csv')
-deaths = pd.read_csv('csv/GOTdeaths.csv')
-stars = pd.read_csv('csv/starsTransformers.csv')
+    .block-container {{
+        overflow: hidden !important;
+        height: 100vh !important;
+    }}
+
+    ::-webkit-scrollbar {{
+        display: none;
+    }}
+
+    /* Texto tabs */
+    .stTabs [data-baseweb="tab"] button {{
+        font-size: 20px !important;
+        font-weight: bold;
+        color: black !important;
+    }}
+
+    /* Hover */
+    .stTabs [data-baseweb="tab"] button:hover {{
+        color: white !important;
+        background-color: #8B0000 !important;
+    }}
+
+    /* Pestaña activa */
+    .stTabs [aria-selected="true"] {{
+        color: white !important;
+        background-color: #DAA520 !important;
+        border-bottom: 3px solid #FFFFFF !important;
+    }}
+    </style>
+""", unsafe_allow_html=True)
+
 
 episodes['Season'] = pd.to_numeric(episodes['Season'], errors='coerce')
 deaths['Season'] = pd.to_numeric(deaths['Season'], errors='coerce')
