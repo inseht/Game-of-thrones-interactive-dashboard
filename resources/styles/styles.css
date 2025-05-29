@@ -1,0 +1,20 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
+.stTabs [data-baseweb="tab"] button {
+    font-size: 20px !important;
+    font-weight: bold;
+    color: black !important;
+}
+
+.stTabs [data-baseweb="tab"] button:hover {
+    color: white !important;
+    background-color: #8B0000 !important;
+}
+
+.stTabs [aria-selected="true"] {
+    color: white !important;
+    background-color: #DAA520 !important;
+    border-bottom: 3px solid #FFFFFF !important;
+}

@@ -2,6 +2,8 @@ import base64
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import plotly.express as px
 
 episodes = pd.read_csv('csv/GOTepisodes.csv')
 deaths = pd.read_csv('csv/GOTdeaths.csv')
@@ -9,7 +11,7 @@ stars = pd.read_csv('csv/starsTransformers.csv')
 
 st.set_page_config(
     page_title="Game of thrones: Interactive dashboard",
-    page_icon="resources/icon.png",
+    page_icon="resources/images/icon.png",
     layout="wide", 
 )
 
@@ -19,106 +21,58 @@ def get_encoded_bg(image_file):
         encoded_string = base64.b64encode(img_bytes).decode()
     return encoded_string
 
-# Obtener fondo codificado
-encoded_string = get_encoded_bg("resources/background.png")
+encoded_string = get_encoded_bg("resources/images/background.png")
 
-# Agregar estilos
-st.markdown(f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/png;base64,{encoded_string}");
-        background-size: 100% 100%;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
+def load_css(file_path):
+    with open(file_path, "r") as f:
+        return f.read()
 
-    .block-container {{
-        overflow: hidden !important;
-        height: 100vh !important;
-    }}
+background_css = f"""
+.stApp {{
+    background-image: url("data:image/png;base64,{encoded_string}");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}}
 
-    ::-webkit-scrollbar {{
-        display: none;
-    }}
+overflow: hidden !important;
+height: 100vh !important;
+"""
 
-    /* Texto tabs */
-    .stTabs [data-baseweb="tab"] button {{
-        font-size: 20px !important;
-        font-weight: bold;
-        color: black !important;
-    }}
+other_css = load_css("resources/styles/styles.css")
 
-    /* Hover */
-    .stTabs [data-baseweb="tab"] button:hover {{
-        color: white !important;
-        background-color: #8B0000 !important;
-    }}
-
-    /* Pestaña activa */
-    .stTabs [aria-selected="true"] {{
-        color: white !important;
-        background-color: #DAA520 !important;
-        border-bottom: 3px solid #FFFFFF !important;
-    }}
-    </style>
-""", unsafe_allow_html=True)
-
-
-episodes['Season'] = pd.to_numeric(episodes['Season'], errors='coerce')
-deaths['Season'] = pd.to_numeric(deaths['Season'], errors='coerce')
+st.markdown(f"<style>{background_css}{other_css}</style>", unsafe_allow_html=True)
 
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9 = st.tabs([
     "General", "Season 1", "Season 2", "Season 3", "Season 4", "Season 5", "Season 6", "Season 7", "Season 8"
 ])
 
 with tab1:
-    st.subheader("Datos de Muertes (Todos)")
-    st.dataframe(deaths, use_container_width=True)
+    st.subheader("US viewers per Season")
+    viewsGrouped = episodes.groupby("Season")["U.S. viewers(millions)"].mean().reset_index()
+    viewsGrouped.columns = ["Season", "Average U.S. viewers (millions)"]
 
-with tab2:
-    col1, col2 = st.columns(2)
+    fig = px.line(viewsGrouped, x="Season", y="Average U.S. viewers (millions)", markers=True,
+                  title="Average U.S. viewers by Season")
+    st.plotly_chart(fig, use_container_width=True)
 
-    with col1:
-        min_stars = int(stars['stars'].min())
-        max_stars = int(stars['stars'].max())
 
-        stars_range = st.slider(
-            "Selecciona el rango de stars",
-            min_value=min_stars,
-            max_value=max_stars,
-            value=(min_stars, max_stars),
-            step=1
-        )
+    st.subheader("Deaths per Season")
 
-        df_filtrado = stars[
-            (stars['stars'] >= stars_range[0]) & 
-            (stars['stars'] <= stars_range[1])
-        ]
+    important_deaths = deaths[deaths["Importance"] >= 2]
+    deaths_count = important_deaths.groupby("Season").size().reset_index(name="Count")
+    fig = px.bar(deaths_count, x="Season", y="Count",
+                title="Important deaths (Importance ≥ 2) per Season")
+    fig.update_yaxes(range=[10, deaths_count["Count"].max() + 5])
+    st.plotly_chart(fig, use_container_width=True)
 
-        tipo_grafico = st.selectbox("Tipo de gráfico", ["Gráfico de pastel", "Gráfico de barras"])
 
-    with col2:
-        fig, ax = plt.subplots()
-        conteo = df_filtrado['stars'].value_counts().sort_index()
 
-        if tipo_grafico == "Gráfico de pastel":
-            ax.pie(conteo.values, labels=conteo.index, autopct='%1.1f%%', colors=plt.cm.Oranges_r(range(len(conteo))))
-            ax.set_title('Distribución de stars (Pastel)')
-        else:
-            ax.bar(conteo.index, conteo.values, color='#8B4513', edgecolor='white')
-            ax.set_title('Distribución de stars (Barras)')
-            ax.set_xlabel('stars')
-            ax.set_ylabel('Frecuencia')
-
-        fig.patch.set_alpha(0)
-        ax.patch.set_alpha(0)
-        st.pyplot(fig)
-
-tabs = [tab3, tab4, tab5, tab6, tab7, tab8, tab9]
+tabs = [tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9]
 
 for i, tab in enumerate(tabs):
-    season = i + 2  
+    season = i + 1  
     with tab:
         st.subheader(f"Temporada {season}")
         
