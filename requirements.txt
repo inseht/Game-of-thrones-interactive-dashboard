@@ -3,4 +3,4 @@ pandas
 matplotlib
 numpy
 plotly
-streamlit-star-rating
+st-star-rating
